@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Album Atlas · Rating Lab</title><style>
+:root{font-family:system-ui,sans-serif;color:#eef0f6;background:#111319}*{box-sizing:border-box}body{margin:0}
+main{max-width:1020px;margin:0 auto;padding:56px 24px}header{display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:14px;font-weight:700;letter-spacing:.14em}.pill{border:1px solid #515a72;border-radius:30px;padding:8px 12px;font-size:12px}
+h1{font-size:clamp(36px,6vw,64px);letter-spacing:-.06em;margin-bottom:12px}p{color:#aeb5c7;line-height:1.65;max-width:700px}
+.grid{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;margin-top:36px}.panel{background:#1b1f29;border:1px solid #333a4d;border-radius:18px;padding:26px}
+label{display:block;font-size:14px;margin:18px 0 10px}input{width:100%;padding:14px;background:#111319;border:1px solid #515a72;color:inherit;border-radius:8px;font-size:16px}
+button{border:0;background:#c9f274;color:#142109;padding:13px 18px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:18px}
+button:disabled{opacity:.5}.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.tag{font-size:12px;color:#c6cee0;padding:6px 9px;border:1px solid #414a60;border-radius:6px}
+.score{font-size:72px;letter-spacing:-.08em;margin:20px 0}small{color:#aeb5c7}.error{color:#ffb5b5}footer{margin-top:42px;color:#868fa4;font-size:12px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}header{gap:20px}.pill{max-width:180px}}
+</style></head><body><main><header><div class="brand">ALBUM ATLAS / RATING LAB</div><span class="pill" id="kind">Loading model…</span></header>
+<h1>Describe the sound.<br>Explore the prediction.</h1><p>A regression experiment comparing linear models, polynomial interactions, and a neural network. Scores are estimates, not judgments about musical quality.</p>
+<div class="grid"><section class="panel"><h2>Descriptive tags</h2><form id="form"><label for="tags">Separate tags with commas</label><input id="tags" value="ambient, atmospheric, instrumental" maxlength="4000" required><button id="submit">Predict rating →</button></form><p id="message" role="status"></p><small>Available training tags</small><div class="tags" id="known"></div></section>
+<section class="panel"><small>ESTIMATED RATING / 10</small><div class="score" id="score">—</div><p id="model">Choose descriptive tags to begin.</p><small id="warning">This demo is trained on fictional albums. Its accuracy does not represent performance on real music.</small></section></div>
+<footer>Artist-disjoint evaluation · Train-only feature fitting · No external API keys required</footer></main><script>
+const $ = id => document.getElementById(id);
+fetch('/metadata').then(r=>r.json()).then(d=>{$('kind').textContent=d.dataset_kind==='synthetic'?'SYNTHETIC DATA DEMO':'USER-SUPPLIED DATA';$('warning').textContent=d.dataset_kind==='synthetic'?'Trained on fictional albums. Demo metrics do not demonstrate real-world accuracy.':'Predictions are uncertain and ratings are subjective. Review the dataset and evaluation report.';d.tags.forEach(t=>{const s=document.createElement('span');s.className='tag';s.textContent=t;$('known').append(s);});}).catch(()=>{$('kind').textContent='Model unavailable';});
+$('form').onsubmit=async e=>{e.preventDefault();$('submit').disabled=true;$('message').textContent='';try{const r=await fetch('/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tags:$('tags').value.split(',').map(x=>x.trim()).filter(Boolean)})});const d=await r.json();if(!r.ok)throw Error(typeof d.detail==='string'?d.detail:'Please check the supplied tags.');$('score').textContent=d.predicted_rating.toFixed(2);$('model').textContent='Selected model: '+d.model.replaceAll('_',' ');$('message').textContent=d.unknown_tags.length?'Not observed in training: '+d.unknown_tags.join(', '):'All tags were observed in training.';$('message').className='';}catch(e){$('message').textContent=e.message;$('message').className='error';}finally{$('submit').disabled=false;}};
+</script></body></html>

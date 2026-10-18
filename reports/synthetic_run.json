@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-16T18:14:50.922156+00:00",
+  "dataset_kind": "synthetic",
+  "dataset_sha256": "3559712496ac1f358698fe181856c4e3189dfb23bdc05c69a8f2bda87717d954",
+  "seed": 42,
+  "max_tags": 40,
+  "rating_scale": [
+    0,
+    10
+  ],
+  "split_method": "artist-disjoint train/validation/test; ~60/20/20 by artist",
+  "splits": {
+    "train": {
+      "albums": 360,
+      "artists": 72
+    },
+    "validation": {
+      "albums": 120,
+      "artists": 24
+    },
+    "test": {
+      "albums": 120,
+      "artists": 24
+    }
+  },
+  "validation": {
+    "mean_baseline": {
+      "mae": 0.678,
+      "rmse": 0.8421030556453055,
+      "r2": -0.0013111331925470537
+    },
+    "linear": {
+      "mae": 0.4962918597732148,
+      "rmse": 0.6016297282798929,
+      "r2": 0.4889102935007352
+    },
+    "polynomial": {
+      "mae": 0.4920502424230466,
+      "rmse": 0.6249791279919973,
+      "r2": 0.4484694342692096
+    },
+    "neural_network": {
+      "mae": 0.6123531851439584,
+      "rmse": 0.7899836947688142,
+      "r2": 0.11879934030690487
+    }
+  },
+  "selected_model": "polynomial",
+  "test": {
+    "mae": 0.5490975103753207,
+    "rmse": 0.6707528115863274,
+    "r2": 0.44126189203133137
+  },
+  "test_mean_baseline": {
+    "mae": 0.8296010416666667,
+    "rmse": 1.0163130158899674,
+    "r2": -0.28273889783136275
+  },
+  "warnings": {
+    "mean_baseline": [],
+    "linear": [],
+    "polynomial": [],
+    "neural_network": [],
+    "refit": []
+  },
+  "environment": {
+    "python": "3.13.5",
+    "scikit_learn": "1.8.0",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3"
+  },
+  "limitations": [
+    "Synthetic data metrics are a software smoke test, not evidence of real music prediction.",
+    "Ratings are subjective; no causal or quality judgment is implied.",
+    "Tags may encode post-release reviews; evaluate temporal leakage on real data.",
+    "Predictions are clipped to [0, 10]; there is no calibrated uncertainty estimate."
+  ]
+}

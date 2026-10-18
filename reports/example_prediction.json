@@ -1,0 +1,15 @@
+{
+  "predicted_rating": 5.972,
+  "scale": [
+    0,
+    10
+  ],
+  "model": "polynomial",
+  "known_tags": [
+    "ambient",
+    "atmospheric",
+    "instrumental"
+  ],
+  "unknown_tags": [],
+  "dataset_kind": "synthetic"
+}
